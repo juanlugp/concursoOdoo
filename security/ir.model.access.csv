@@ -5,3 +5,4 @@ response_model_access_rule,concursos.participation,model_participation,base.grou
 participation_response_model_access_rule,concursos.participation_response,model_participation_response,base.group_user,1,1,1,1
 response_options_model_access_rule,concursos.response_options,model_response_options,base.group_user,1,1,1,1
 response_wizard_model_access_rule,concursos.response_wizard,model_response_wizard,base.group_user,1,1,1,1
+response_wizard_bool_access_rule,concursos.response_wizard_bool,model_response_wizard_bool,base.group_user,1,1,1,1

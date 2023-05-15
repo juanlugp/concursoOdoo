@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from ..demo import models
+from . import models

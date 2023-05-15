@@ -174,28 +174,8 @@
             </group>
             <field name="participation_response_ids">
               <tree editable="bottom" create="false">
-                <field name="question_type" invisible="1"/>
-                <field name="question_id" readonly="1" />
-                <field name="response_int" 
-                  attrs="{ 
-                    'readonly': [('question_type', '!=', 'num')],
-                    'required': [('question_type', '=', 'num')]                    
-                     }"/>
-                <field name="response_text" 
-                  attrs="{ 
-                    'readonly': [('question_type', '!=', 'text')], 
-                    'required': [('question_type', '=', 'text')], 
-                    }"/>
-                <field name="response_bool" 
-                  attrs="{ 
-                    'readonly': [('question_type', '!=', 'bool')], 
-                    'required': [('question_type', '=', 'bool')], 
-                    }"/>
-                <field name="response_list" 
-                  attrs="{ 
-                    'readonly': [('question_type', '!=', 'list')], 
-                    'required': [('question_type', '=', 'list')], 
-                    }"/>
+                <field name="question_id" readonly="1"/>                
+                <field name="response" readonly="1"/>
               </tree>
             </field>
           </sheet>
@@ -274,11 +254,12 @@
                     'required': [('question_type', '=', 'text')],
                     'invisible': [('question_type', '!=', 'text')] 
                     }"/>
-              <field name="response_bool" 
+              <field name="response_bool_options_id" 
                   attrs="{ 
                     'required': [('question_type', '=', 'bool')],
                     'invisible': [('question_type', '!=', 'bool')] 
-                    }"/>
+                    }"
+                    widget="radio"/>
               <field name="response_list" 
                   attrs="{ 
                     'required': [('question_type', '=', 'list')],

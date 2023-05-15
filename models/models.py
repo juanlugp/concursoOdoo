@@ -43,6 +43,14 @@ class concursos(models.Model):
                     "res_id":res.id,
                     "context":{'form_view_initial_mode':'edit'}
                     } # Con esto se abre el formulario de la participación creada
+        else:
+            return {
+                "type": "ir.actions.act_window",
+                "res_model": "participation",
+                "views": [[False, "form"]],
+                "res_id":id_participacion.id,
+                "context":{}
+            }
 
 
     def inciarparticipacion (self):
@@ -147,6 +155,7 @@ class participation_response(models.Model):
     response_list = fields.Many2one(comodel_name='response_options', string='Response list')
     response = fields.Text(compute='_get_response', string='Response')
     response_ok = fields.Boolean(string='Response ok')
+    is_contestada = fields.Boolean(string='Ya contestada')
     participation_id = fields.Many2one(comodel_name='participation', string='Participation')
     question_type = fields.Selection(string='type', related='question_id.type')
     
@@ -155,7 +164,20 @@ class participation_response(models.Model):
     @api.depends('response_bool',  'response_int', 'response_text', 'response_list')
     def _get_response(self):
         for record in self:
-            record.response = "Hola mundo"
+            if record.is_contestada:
+                if record.question_type == 'bool':
+                    record.response = record.response_bool and "Verdero" or "Falso"
+                elif record.question_type == 'num':
+                    record.response = str(record.response_int)
+                elif record.question_type == 'text':
+                    record.response = record.response_text
+                elif record.question_type == 'list':
+                    record.response = record.response_list.name
+                else:
+                    record.response = False
+            else:
+                record.response = False
+            
     
 class response_options(models.Model):
     _name = 'response_options'
@@ -195,6 +217,7 @@ class response_wizard(models.TransientModel):
     response_int = fields.Float(string='Response number')    
     response_text = fields.Text(string='Response text')
     response_bool = fields.Boolean(string='Response bool')
+    response_bool_options_id = fields.Many2one(comodel_name='response_wizard_bool', string='Bool Options')
     response_list = fields.Many2one(comodel_name='response_options', string='Response list')
     response_ok = fields.Boolean(string='Response ok')
     participation_id = fields.Many2one(comodel_name='participation', string='Participation')
@@ -202,8 +225,17 @@ class response_wizard(models.TransientModel):
     question_type = fields.Selection(related ='question_id.type')
     participation_response_id = fields.Many2one(comodel_name='participation_response', string='response')
     
+    @api.model
+    def create(self, vals):
+        res = super(response_wizard, self).create(vals)
+        if len(self.env['response_wizard_bool'].search([])) != 2:
+            self.env['response_wizard_bool'].search([]).unlink()
+            self.env['response_wizard_bool'].create([{'name':'Verdadero'},{'name':'Falso'}])
+        return res
+
 
     def siguientepregunta(self):
+        self.participation_response_id.is_contestada = True   
         if self.question_type == 'bool':
             self.participation_response_id.response_bool = self.response_bool
         elif self.question_type == 'num':
@@ -216,5 +248,14 @@ class response_wizard(models.TransientModel):
 
         return self.participation_response_id.participation_id.concurso_id.iniciarwizard()
         
+
+
+class ResponseWizardBool(models.TransientModel):
+    _name = 'response_wizard_bool'
+    _description = 'Modelo para los campos boleanos'
+
+    name = fields.Char(string='name')
+    
+
 
       
