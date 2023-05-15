@@ -1,0 +1,350 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <!-- questions tree view -->
+    <record model="ir.ui.view" id="concursos_view_list">
+      <field name="name">concursos list</field>
+      <field name="model">concursos</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="description"/>
+          <field name="date_start" />
+          <field name="date_end" />
+          <field name="image" />
+          <field name="state" />
+          <field name="partner_ids" />
+          <field name="questions_ids" />
+          <field name="time_min" />
+          <field name="time_max" />
+          <field name="estimation" />
+          <field name="impact" />
+          <!-- <button name="generarparticipaciones" type="object" string="Generar" /> -->
+          <!-- <button name="inciarparticipacion" type="object" string="Iniciar" /> -->
+        </tree>
+      </field>
+    </record>
+
+    <!-- questions search view -->
+    <record model="ir.ui.view" id="concursos_view_search">
+      <field name="name">concursos search</field>
+      <field name="model">concursos</field>
+      <field name="arch" type="xml">
+        <search>
+          <field name="name"/>
+          <field name="description"/>
+          <field name="date_start" />
+          <field name="state" />
+          <filter string="Activate" name="filtrostate" domain="[('state','=',True)]" />
+          <!--<filter string="Online" name="filtrovivos" domain="[('date_start','&gt;=',context_today().strftime('%Y-%m-%d')), ('date_end','&lt;=',context_today().strftime('%Y-%m-%d'))]" />-->
+          <filter string="Online" name="filtrostatevivos" domain="[('date_start','&lt;=',context_today().strftime('%Y-%m-%d')), ('date_end','&gt;=',context_today().strftime('%Y-%m-%d')),('state','=',True)]" />
+          <!-- now = context_today().strftime('%Y-%m-%d') -->
+          <!-- Esta forma no es correcta, con formateo siempre funciona todo <filter string="Vivos2" name="filtrovivos" domain="[('date_start','&gt;=',context_today()), ('date_end','&lt;=',context_today())]" /> -->
+          <group expand="0" string="Group By...">
+            <filter string="Date" name="date" domain="[]" context="{'group_by':'date_start'}"/>
+            <filter string="State" name="model" domain="[]" context="{'group_by':'state'}"/>
+          </group>
+
+          <!-- <search string="Asset Account">
+                <field name="name" string="Asset"/>
+                <field name="first_depreciation_date"/>
+                <filter string="Current" name="current" domain="[('state','in', ('draft','open'))]" help="Assets in draft and open states"/>
+                <separator/>
+                <filter invisible="1" string="Late Activities" name="activities_overdue" 
+                    domain="[('my_activity_date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                    help="Show all records which has next action date is before today"/>
+                El filtro invisible no se ve SÓLO en la lista de filtros, pero si se ve en Buscar, y por tanto el usuario lo podría quitar-->
+        </search>
+      </field>
+    </record>
+    <!-- consursos form view -->
+    <record id="consursos_view_form" model="ir.ui.view">
+      <field name="name">consursos form</field>
+      <field name="model">concursos</field>
+      <field name="arch" type="xml">
+        <form string="Concurso">
+        <header>
+          <button name="inciarparticipacion" type="object" string="Iniciar" />
+          <button name="iniciarwizard" type="object" string="IniciarWizard" />
+        </header>
+          <sheet>
+            <group>
+              <group>
+                <field name="name" help="Nombre de concurso"/>
+              </group>
+              <group>
+                <field name="image" widget="image" nolabel="1" class="oe_avatar"/>
+              </group>
+            </group>
+            <group name="consursos" string="Datos del concurso">
+              <field name="description" />
+
+              <group>
+                <field name="date_start" widget="date" />
+                <field name="time_min" widget="float_time" />
+                <field name="estimation" />
+              </group>
+              <group>
+                <field name="date_end" widget="date" />
+                <field name="time_max" widget="float_time" />
+                <field name="impact" widget="percentage"/>
+              </group>
+            </group>
+            <group name="concursante" string="Concursantes">
+              <field name="partner_ids" nolabel="1">
+                <tree create="false">
+                  <field name="name"/>
+                  <field name="phone"/>
+                  <field name="email"/>
+                </tree>
+              </field>
+            </group>
+            <group name="preguntas" string="Preguntas">
+              <field name="questions_ids" nolabel="1" />
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- questions tree view -->
+    <record id="questions_view_tree" model="ir.ui.view">
+      <field name="name">questions.view.tree</field>
+      <field name="model">questions</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="type" />
+          <field name="time_min" />
+          <field name="time_max" />
+        </tree>
+      </field>
+    </record>
+    
+    <!-- Questions view-->
+
+
+    <!-- response_options tree view -->
+    <record id="response_options_view_tree" model="ir.ui.view">
+      <field name="name">response_options.view.tree</field>
+      <field name="model">response_options</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="question_id" />
+          <field name="question_ok" />
+        </tree>
+      </field>
+    </record>
+
+    <!-- participation tree view -->
+    <record id="participation_view_tree" model="ir.ui.view">
+      <field name="name">participation.view.tree</field>
+      <field name="model">participation</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="participation_response_ids"/>
+          <field name="partner_id"/>
+          <field name="concurso_id"/>
+          <field name="state"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- participation form view -->
+    <record id="participation_view_form" model="ir.ui.view">
+      <field name="name">participation.view.form</field>
+      <field name="model">participation</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <h1>
+              <field name="name" class="oe_inline"/>
+            </h1>
+            <group>
+              <group>
+                <field name="partner_id"/>
+                <field name="concurso_id"/>
+              </group>
+              <group>
+                <field name="date"/>
+              </group>
+            </group>
+            <field name="participation_response_ids">
+              <tree editable="bottom" create="false">
+                <field name="question_type" invisible="1"/>
+                <field name="question_id" readonly="1" />
+                <field name="response_int" 
+                  attrs="{ 
+                    'readonly': [('question_type', '!=', 'num')],
+                    'required': [('question_type', '=', 'num')]                    
+                     }"/>
+                <field name="response_text" 
+                  attrs="{ 
+                    'readonly': [('question_type', '!=', 'text')], 
+                    'required': [('question_type', '=', 'text')], 
+                    }"/>
+                <field name="response_bool" 
+                  attrs="{ 
+                    'readonly': [('question_type', '!=', 'bool')], 
+                    'required': [('question_type', '=', 'bool')], 
+                    }"/>
+                <field name="response_list" 
+                  attrs="{ 
+                    'readonly': [('question_type', '!=', 'list')], 
+                    'required': [('question_type', '=', 'list')], 
+                    }"/>
+              </tree>
+            </field>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+
+    <!-- participation_response tree view -->
+    <record id="participation_response_view_tree" model="ir.ui.view">
+      <field name="name">participation_response.view.tree</field>
+      <field name="model">participation_response</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="question_id"/>
+          <field name="response_int"/>
+          <field name="response_text"/>
+          <field name="response_bool"/>
+          <field name="response_list"/>
+          <field name="response"/>
+          <field name="response_ok"/>
+          <field name="participation_id"/>
+        </tree>
+      </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="concursos_list_action">
+      <field name="name">Listado de concursos</field>
+      <field name="res_model">concursos</field>
+      <field name="view_mode">tree,form</field>
+      
+      <!-- <field name="context" eval="{'search_default_name': 'Concurso 1'}"/> -->
+      <field name="context" eval="{'search_default_filtrostatevivos': True}"/>  <!-- Lo que haya después de search_default_ es el nombre del campo o filtro -->
+      <field name="search_view_id" ref="concursos_view_search"/> <!-- Esto indica donde se aplica el context -->
+    </record>
+
+    <record model="ir.actions.act_window" id="participation_list_action">
+      <field name="name">Participaciones</field>
+      <field name="res_model">participation</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="questions_list_action">
+      <field name="name">Preguntas</field>
+      <field name="res_model">questions</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="response_options_list_action">
+      <field name="name">Respuestas</field>
+      <field name="res_model">response_options</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+<!-- Vista question_wizard -->
+  <record id ="response_wizard_view" model="ir.ui.view" >
+    <field name="name">response_wizard_view</field>
+      <field name="model">response_wizard</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            
+            <h1><field name="texto_question"/></h1>
+            <group>
+            <field name = 'question_type' invisible='1'/>
+            <h1><field name="response_int" 
+                  attrs="{ 
+                    'required': [('question_type', '=', 'num')],
+                    'invisible': [('question_type', '!=', 'num')]                  
+                     }"/>
+              <field name="response_text" placeholder='respuesta'
+                  attrs="{ 
+                    'required': [('question_type', '=', 'text')],
+                    'invisible': [('question_type', '!=', 'text')] 
+                    }"/>
+              <field name="response_bool" 
+                  attrs="{ 
+                    'required': [('question_type', '=', 'bool')],
+                    'invisible': [('question_type', '!=', 'bool')] 
+                    }"/>
+              <field name="response_list" 
+                  attrs="{ 
+                    'required': [('question_type', '=', 'list')],
+                    'invisible': [('question_type', '!=', 'list')] 
+                    }"/></h1>
+            </group>
+            <button name="siguientepregunta" type="object" string="Siguiente" />
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+
+
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="concursos.action_server">
+      <field name="name">concursos server</field>
+      <field name="model_id" ref="model_concursos_concursos"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+
+
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="concursos.action_server">
+      <field name="name">concursos server</field>
+      <field name="model_id" ref="model_concursos_concursos"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+
+    <menuitem name="Concursos" id="concursos_menu_root"/>
+
+    <!-- menu categories -->
+
+    <menuitem sequence="30" name="Config" id="concursos_menu_config" parent="concursos_menu_root"/>
+    <!--    <menuitem name="Menu 2" id="concursos.menu_2" parent="concursos.menu_root"/>
+-->
+    <!-- actions -->
+
+    <menuitem sequence="10" name="Concursos" id="concursos_menu_list" parent="concursos_menu_root" action="concursos_list_action"/>
+    <menuitem sequence="20" name="participations" id="participation_menu_list" parent="concursos_menu_root" action="participation_list_action"/>
+    <menuitem sequence="40" name="Questions" id="concursos_menu_questions" parent="concursos_menu_config" action="questions_list_action"/>
+    <menuitem sequence="50" name="Response options" id="concursos_menu_response_options" parent="concursos_menu_config" action="response_options_list_action"/>
+
+  </data>
+</odoo>
+

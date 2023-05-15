@@ -1,0 +1,61 @@
+<odoo>
+
+    <data noupdate="1">
+          <!-- Pregutas del concurso -->
+          <record id="questions_concurso_1" model= "questions">
+          <field name="name">¿Cuál es la mejor formación de odoo?</field>
+          <field name="type" >text</field>
+          <field name="response_text">odoo Juanfer</field>
+          </record>
+
+          <record id="questions_concurso_2" model= "questions">
+          <field name="name">¿Son buenas las mandarinas?</field>
+          <field name="type" >bool</field>
+          <field name="response_bool">1</field>
+          </record>
+
+          <record id="questions_concurso_3" model= "questions">
+          <field name="name">¿Cuántos números de trabajadores hay en pantoja?</field>
+          <field name="type" >num</field>
+          <field name="response_int">10000</field>
+          </record>
+
+          <record id="questions_concurso_4" model= "questions">
+          <field name="name">¿Cuántos números de trabajadores hay en pantoja?</field>
+          <field name="type" >list</field>
+          </record>
+
+               <!--Respuesta del tipo lista(questions_concurso_4)-->
+          <record id="response_option1_question_4" model="response_options" > 
+          <field name="name" >45620</field>
+          <field name="question_id" ref="questions_concurso_4"/>
+          <field name ="question_ok">1</field>
+          </record>
+
+          <record id="response_option2_question_4" model="response_options" > 
+          <field name="name" >11230</field>
+          <field name="question_id" ref="questions_concurso_4"/>
+          </record>
+
+          <record id="response_option3_question_4" model="response_options" > 
+          <field name="name" >0020</field>
+          <field name="question_id" ref="questions_concurso_4"/>
+          </record>
+
+          
+          <!-- Definición del concurso -->
+          <record id="demo_concurso1" model="concursos">
+            <field name="name">concurso demo 1</field>
+            <field name="date_start" eval="datetime.today().strftime('%Y-%m-%d')"/>
+            <field name="date_end" eval="(datetime.now() + relativedelta(days=14)).strftime('%Y-%m-%d')"/>
+            <field name="image"></field>
+            <field name="description">Descripción</field>
+            <field name="time_min">0</field>            
+            <field name="time_max">0</field>
+            <field name="questions_ids" eval="[(4, ref('questions_concurso_1')) , (4, ref('questions_concurso_2')) , (4, ref('questions_concurso_3')) , (4, ref('questions_concurso_4'))]"/>
+            <field name="state">1</field>
+          </record>
+        
+
+    </data>
+</odoo>

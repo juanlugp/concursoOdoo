@@ -1,0 +1,392 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* concursos_Juanlu
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0-20230210\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-04-19 11:34+0000\n"
+"PO-Revision-Date: 2023-04-19 14:03+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#. module: concursos_Juanlu
+#: model_terms:ir.ui.view,arch_db:concursos_Juanlu.concursos_view_search
+msgid "Activate"
+msgstr "Activar"
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields.selection,name:concursos_Juanlu.selection__questions__type__bool
+msgid "Boolean"
+msgstr "Lógico"
+
+#. module: concursos_Juanlu
+#: model_terms:ir.ui.view,arch_db:concursos_Juanlu.consursos_view_form
+msgid "Concursantes / Preguntas"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation__concurso_id
+#: model_terms:ir.ui.view,arch_db:concursos_Juanlu.consursos_view_form
+msgid "Concurso"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.ui.menu,name:concursos_Juanlu.concursos_menu_list
+#: model:ir.ui.menu,name:concursos_Juanlu.concursos_menu_root
+msgid "Concursos"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.ui.menu,name:concursos_Juanlu.concursos_menu_config
+msgid "Config"
+msgstr "Configuración"
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__create_uid
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation__create_uid
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__create_uid
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__create_uid
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_response_options__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__create_date
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation__create_date
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__create_date
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__create_date
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_response_options__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model_terms:ir.ui.view,arch_db:concursos_Juanlu.concursos_view_search
+msgid "Date"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: code:addons/concursos_Juanlu/models/models.py:0
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__date_end
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation__date
+#, python-format
+msgid "Date end"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: code:addons/concursos_Juanlu/models/models.py:0
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__date_start
+#, python-format
+msgid "Date start"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model_terms:ir.ui.view,arch_db:concursos_Juanlu.consursos_view_form
+msgid "Datos del concurso"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__description
+msgid "Descripción"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: code:addons/concursos_Juanlu/models/models.py:0
+#, python-format
+msgid "Description"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__display_name
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation__display_name
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__display_name
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__display_name
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_response_options__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation__state
+msgid "Estado"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__estimation
+msgid "Estimation"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields.selection,name:concursos_Juanlu.selection__participation__state__fi
+msgid "Finalizado"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model_terms:ir.ui.view,arch_db:concursos_Juanlu.concursos_view_search
+msgid "Group By..."
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__id
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation__id
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__id
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__id
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_response_options__id
+msgid "ID"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__image
+msgid "Image"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__impact
+msgid "Impact"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields.selection,name:concursos_Juanlu.selection__participation__state__in
+msgid "Iniciada"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model_terms:ir.ui.view,arch_db:concursos_Juanlu.consursos_view_form
+msgid "Iniciar"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos____last_update
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation____last_update
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response____last_update
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions____last_update
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_response_options____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__write_uid
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation__write_uid
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__write_uid
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__write_uid
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_response_options__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__write_date
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation__write_date
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__write_date
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__write_date
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_response_options__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields.selection,name:concursos_Juanlu.selection__questions__type__list
+msgid "List"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.actions.act_window,name:concursos_Juanlu.concursos_list_action
+msgid "Listado de concursos"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__time_max
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__time_max
+msgid "Maximum time"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__time_min
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__time_min
+msgid "Minimum time"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: code:addons/concursos_Juanlu/models/models.py:0
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__name
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_response_options__name
+#, python-format
+msgid "Name"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__name
+msgid "Nombre"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model_terms:ir.ui.view,arch_db:concursos_Juanlu.consursos_view_form
+msgid "Nombre de concurso"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields.selection,name:concursos_Juanlu.selection__questions__type__num
+msgid "Number"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model_terms:ir.ui.view,arch_db:concursos_Juanlu.concursos_view_search
+msgid "OnLine"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.actions.act_window,name:concursos_Juanlu.participation_list_action
+msgid "Participaciones"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__participation_id
+msgid "Participation"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation__participation_response_ids
+msgid "Participation response"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation__partner_id
+msgid "Partner"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__partner_ids
+msgid "Partners"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.actions.act_window,name:concursos_Juanlu.questions_list_action
+msgid "Preguntas"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__question_id
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_response_options__question_id
+msgid "Question"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_response_options__question_ok
+msgid "Question ok"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__questions_ids
+#: model:ir.ui.menu,name:concursos_Juanlu.concursos_menu_questions
+msgid "Questions"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__response
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__response
+msgid "Response"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__response_bool
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__response_bool
+msgid "Response bool"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__response_list
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__response_list
+msgid "Response list"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__response_int
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__response_int
+msgid "Response number"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__response_ok
+msgid "Response ok"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.ui.menu,name:concursos_Juanlu.concursos_menu_response_options
+msgid "Response options"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__response_text
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__response_text
+msgid "Response text"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.actions.act_window,name:concursos_Juanlu.response_options_list_action
+msgid "Respuestas"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields.selection,name:concursos_Juanlu.selection__participation__state__si
+msgid "Sin Inicia"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_concursos__state
+#: model_terms:ir.ui.view,arch_db:concursos_Juanlu.concursos_view_search
+msgid "State"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields.selection,name:concursos_Juanlu.selection__questions__type__text
+msgid "Text"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_questions__type
+msgid "Type"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model,name:concursos_Juanlu.model_concursos
+msgid "listado de concursos"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model,name:concursos_Juanlu.model_questions
+msgid "listado de preguntas"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation__name
+msgid "name"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model,name:concursos_Juanlu.model_response_options
+msgid "opciones de las respuestas"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model,name:concursos_Juanlu.model_participation
+msgid "participaciones de los concursantes"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.ui.menu,name:concursos_Juanlu.participation_menu_list
+msgid "participations"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model,name:concursos_Juanlu.model_participation_response
+msgid "respuestas de los concursantes"
+msgstr ""
+
+#. module: concursos_Juanlu
+#: model:ir.model.fields,field_description:concursos_Juanlu.field_participation_response__question_type
+msgid "type"
+msgstr ""
