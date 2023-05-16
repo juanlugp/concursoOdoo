@@ -2,7 +2,7 @@
   <data>
     <!-- explicit list view definition -->
 
-    <!-- questions tree view -->
+    <!-- consurso tree view -->
     <record model="ir.ui.view" id="concursos_view_list">
       <field name="name">concursos list</field>
       <field name="model">concursos</field>
@@ -26,7 +26,7 @@
       </field>
     </record>
 
-    <!-- questions search view -->
+    <!-- concurso search view -->
     <record model="ir.ui.view" id="concursos_view_search">
       <field name="name">concursos search</field>
       <field name="model">concursos</field>
@@ -114,6 +114,7 @@
       <field name="model">questions</field>
       <field name="arch" type="xml">
         <tree>
+          <field name="sequence" widget="handle"/>
           <field name="name"/>
           <field name="type" />
           <field name="time_min" />
@@ -241,7 +242,7 @@
         <form>
           <sheet>
             
-            <h1><field name="texto_question"/></h1>
+            <h1> <field name="progress"/> - <field name="texto_question"/></h1>
             <group>
             <field name = 'question_type' invisible='1'/>
             <h1><field name="response_int" 
@@ -264,9 +265,10 @@
                   attrs="{ 
                     'required': [('question_type', '=', 'list')],
                     'invisible': [('question_type', '!=', 'list')] 
-                    }"/></h1>
+                    }"
+                    widget="radio"/></h1>
             </group>
-            <button name="siguientepregunta" type="object" string="Siguiente" />
+            <button name="siguientepregunta" type="object" string="Siguiente" class="btn-primary"/>
           </sheet>
         </form>
       </field>

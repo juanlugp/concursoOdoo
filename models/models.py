@@ -110,6 +110,7 @@ class concursos(models.Model):
 class questions(models.Model):
     _name = 'questions'
     _description = 'listado de preguntas'
+    _order = 'sequence, id'
 
     name = fields.Char(string='Name')
     type = fields.Selection(string='Type', selection=[('num', 'Number'), ('text', 'Text'), ('list', 'List'),  ('bool', 'Boolean')])
@@ -120,6 +121,8 @@ class questions(models.Model):
     time_min = fields.Integer(string='Minimum time')
     time_max = fields.Integer(string='Maximum time')
     response = fields.Text(compute='_get_response', string='Response')
+    sequence = fields.Integer(string='sequence', default=10)
+    
     
 
     @api.depends('type', 'response_bool',  'response_int', 'response_text', 'response_list')
@@ -147,8 +150,10 @@ class participation(models.Model):
 class participation_response(models.Model):
     _name = 'participation_response'
     _description = 'respuestas de los concursantes'
+    _order = "sequence, id"
 
     question_id = fields.Many2one(comodel_name='questions', string='Question')
+    sequence = fields.Integer(string='sequence', related='question_id.sequence', store=True)
     response_int = fields.Float(string='Response number')    
     response_text = fields.Text(string='Response text')
     response_bool = fields.Boolean(string='Response bool')
@@ -213,6 +218,7 @@ class response_report(models.Model):
 
 class response_wizard(models.TransientModel):
     _name= 'response_wizard'
+
     question_id = fields.Many2one(comodel_name='questions', string='Question')
     response_int = fields.Float(string='Response number')    
     response_text = fields.Text(string='Response text')
@@ -224,6 +230,12 @@ class response_wizard(models.TransientModel):
     texto_question =fields.Char(related='question_id.name')
     question_type = fields.Selection(related ='question_id.type')
     participation_response_id = fields.Many2one(comodel_name='participation_response', string='response')
+    total_questions = fields.Integer(string='Total Questions', compute="totalquestions")
+    question_number = fields.Integer(string='Question Number', compute="totalquestions")
+    progress = fields.Char(string='Progress', compute="totalquestions")
+    
+    
+    
     
     @api.model
     def create(self, vals):
@@ -247,6 +259,18 @@ class response_wizard(models.TransientModel):
 
 
         return self.participation_response_id.participation_id.concurso_id.iniciarwizard()
+    
+    @api.depends('participation_id.participation_response_ids', 'participation_response_id')
+    def totalquestions(self):        
+        for reg in self:
+            responses = reg.participation_id.participation_response_ids
+            total = len(responses)
+            number = list(responses).index(reg.participation_response_id) + 1
+            reg.total_questions = total 
+            reg.question_number = number
+            reg.progress = str(number) + " / " + str(total)
+
+    
         
 
 
