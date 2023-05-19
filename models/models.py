@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from operator import truediv
 from odoo import models, fields, api, _ #_ es para incluir las traducciones
 from odoo.exceptions import UserError
 from odoo import tools
+from datetime import datetime
 
 
 class concursos(models.Model):
@@ -15,21 +17,92 @@ class concursos(models.Model):
     date_end = fields.Date(string=_('Date end'))
     image = fields.Binary(string='Image')
     state = fields.Boolean(string='State')
+    estado = fields.Selection(string='State', selection=[('no_iniciado', 'Not Started'), ('iniciado', 'Started'), ('finalizado', 'Finish')], default="no_iniciado")
     partner_ids = fields.Many2many(comodel_name='res.partner', string='Partners', relation='concursos_partner_rel', column1='concursos_id', column2='partner_id')
     questions_ids = fields.Many2many(comodel_name='questions', string='Questions', relation='concursos_questions_rel', column1='concursos_id', column2='questions_id') 
     time_min = fields.Integer(string='Minimum time')
     time_max = fields.Integer(string='Maximum time')
     estimation = fields.Integer(string='Estimation')
     impact = fields.Integer(string='Impact')
+    # started = fields.Boolean(compute='_get_iniciado', string='Started')
+    # end = fields.Boolean(string='End')
+    
+    def write (self, vals):
+        if vals.get('estado') == "no_iniciado":
+            raise UserError ('No se ha puede volver a No iniciado un concurso')
+        elif vals.get('estado') == "iniciado":
+            self.inciarparticipacionInt()            
+        res = super(concursos, self).write(vals)
+        if vals.get('estado') == "finalizado":
+            self.finalizarparticipacion()
+        
+        return res
+
+        # def _get_iniciado(self):
+    #     for record in self:
+    #         dominio=[['concurso_id','=',record.id], 
+    #                  ['partner_id','=',record.env.user.partner_id.id]]
+    #         record.started=record.env['participation'].search (dominio)
+    # def _get_finalizado(self):
+    #     if self.estado == False: estado='no_iniciado'
+    #     end = False
+        # for record in self:
+        #     end=(record.date_end >= datetime.today())
+      
+    def finalizarparticipacion (self):
+        if self.estado == "no_iniciado":
+            raise UserError ('No se ha iniciado el concurso')
+        if self.estado == "finalizado":
+            raise UserError ('El concurso ya está finalizado')
+        
+        for record in self:
+            id_participacion =record.env['participation'].search([['concurso_id','=',record.id],['partner_id','=',self.env.user.partner_id.id],['state', '!=', 'fi']], limit=1) 
+            # ahora hay que evaluar si as respuestas son correctas o no
+        # self.estado="finalizado"    --Se se deja haría un bucle infinito porque toda función llama a write
+        # self.end=datetime.today()
+
+    def inciarparticipacionInt (self):
+        self.ensure_one()
+        if self.estado == "iniciado":
+            raise UserError ('Ya tiene participaciones para este concurso')
+        if self.env.user.partner_id.id in self.partner_ids.ids:
+            part={
+                'concurso_id':self.id,
+                'partner_id':self.env.user.partner_id.id,
+                'name': self.name + ' ' + self.env.user.partner_id.name,
+                'participation_response_ids':[(0,0,{'question_id': q.id}) for q in self.questions_ids]
+                }
+            res=self.env['participation'].create(part)            
+            return res
+        else:
+            raise UserError ('No pertenece al concurso')
 
 
+    def inciarparticipacion (self):
+        lis=[('concurso_id','=',self.id),('partner_id', '=',self.env.user.partner_id.id)]
+        participaciones=self.env['participation'].search(lis, limit=1)
+        return {
+                "type": "ir.actions.act_window",
+                "res_model": "participation",
+                "views": [[False, "form"]],
+                "res_id":participaciones.id
+                } # Con esto se abre el formulario de la participación creada
 
 
     def iniciarwizard(self):
+        hoy=datetime.today()
+        inicio=self.date_start
+        if self.estado == "no_iniciado":
+            raise UserError ('No se ha iniciado el concurso')
+        if (inicio!=False & inicio<=hoy):
+            raise UserError ('El concurso aún no se puede realizar')
+        if self.estado == "finalizado":
+            raise UserError ('El concurso ya ha expirado')
+        
         id_participacion =self.env['participation'].search([['concurso_id','=',self.id],['partner_id','=',self.env.user.partner_id.id],['state', '!=', 'fi']], limit=1) 
         # self.env['participation_response'].search(['participation_id', '=', id_participacion])
         respuestasSinContestar = id_participacion.participation_response_ids.filtered(lambda x: not x.response)
-        if respuestasSinContestar :  
+        if respuestasSinContestar:
             wiz={
                     'question_id': respuestasSinContestar[0].question_id.id,
                     'participation_id':respuestasSinContestar[0].participation_id.id,
@@ -44,6 +117,10 @@ class concursos(models.Model):
                     "context":{'form_view_initial_mode':'edit'}
                     } # Con esto se abre el formulario de la participación creada
         else:
+            date=id_participacion.date
+            if date == False:
+                self.impact=self.impact+1 # Sólo si no se ha sumado ya
+                id_participacion.date=datetime.today()
             return {
                 "type": "ir.actions.act_window",
                 "res_model": "participation",
@@ -51,61 +128,48 @@ class concursos(models.Model):
                 "res_id":id_participacion.id,
                 "context":{}
             }
-
-
-    def inciarparticipacion (self):
-        self.ensure_one()
-        dominio=[['concurso_id','=',self.id], 
-                 ['partner_id','=',self.env.user.partner_id.id]]
-        panticipacionesanteriores=self.env['participation'].search (dominio)
-        if panticipacionesanteriores:
-            return {
-                    "type": "ir.actions.act_window",
-                    "res_model": "participation",
-                    "views": [[False, "tree"]],
-                    "domain": [["id", "in", panticipacionesanteriores.ids]],
-                    } #Con esto se abre mi lista de patcicipaciones del concurso
-            # raise UserError ('Ya tiene participaciones para este concurso')
-      
-
-        if self.env.user.partner_id.id in self.partner_ids.ids:
-            part={
-                'concurso_id':self.id,
-                'partner_id':self.env.user.partner_id.id,
-                'name': self.name + ' ' + self.env.user.partner_id.name,
-                'participation_response_ids':[(0,0,{'question_id': q.id}) for q in self.questions_ids]
-                }
-            res=self.env['participation'].create(part)            
-            return {
-                    "type": "ir.actions.act_window",
-                    "res_model": "participation",
-                    "views": [[False, "form"]],
-                    "res_id":res.id
-                    } # Con esto se abre el formulario de la participación creada
-        else:
-            raise UserError ('No pertenece al concurso')
-
-
-    def generarparticipaciones (self):
-        for concurso in self:
-            for participacion in concurso.partner_ids:
-                part={
-                    'concurso_id':concurso.id,
-                    'partner_id':participacion.id,
-                    'participation_response_ids':[(0,0,{'question_id': q.id}) for q in concurso.questions_ids]
-                    }
-                self.env['participation'].create(part)
+            
+    # def generarparticipaciones (self):
+    #     for concurso in self:
+    #         for participacion in concurso.partner_ids:
+    #             part={
+    #                 'concurso_id':concurso.id,
+    #                 'partner_id':participacion.id,
+    #                 'participation_response_ids':[(0,0,{'question_id': q.id}) for q in concurso.questions_ids]
+    #                 }
+    #             self.env['participation'].create(part)
                             
-                # for u in l:
-	            #     if u.es_bueno:
-		        #     lista.append(u.id)
-                # esto se resume como: lista = [u.id for u in l if u.es_bueno]
+    #             # for u in l:
+	#             #     if u.es_bueno:
+	# 	        #     lista.append(u.id)
+    #             # esto se resume como: lista = [u.id for u in l if u.es_bueno]
                 
-                # part = {}
-                # part['concurso_id'] = concurso.id
-                # part['partner_id']=participacion.id
-        return True
+    #             # part = {}
+    #             # part['concurso_id'] = concurso.id
+    #             # part['partner_id']=participacion.id
+    #     return True
 
+    def estimation_plus(self):
+        unit = self.env.context.get('unit')
+        max = self.env.context.get('max')
+        # min = self.env.context.get('min')
+        for record in self:
+            record.estimation = record.estimation + unit
+            if record.estimation>max:
+                record.estimation=max
+
+    def estimation_minus(self):                
+        unit = self.env.context.get('unit')
+        min = self.env.context.get('min')
+        # min = self.env.context.get('min')
+        for record in self:
+            record.estimation = record.estimation - unit
+            if record.estimation<min:
+                record.estimation=min
+        
+    def estimation_clear(self):                
+        for record in self:
+            record.estimation=0
 
 class questions(models.Model):
     _name = 'questions'

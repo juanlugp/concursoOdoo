@@ -13,6 +13,9 @@
           <field name="date_start" />
           <field name="date_end" />
           <field name="image" />
+          <field name="estado" />
+          <!-- <field name="started" />
+          <field name="end" /> -->
           <field name="state" />
           <field name="partner_ids" />
           <field name="questions_ids" />
@@ -20,8 +23,9 @@
           <field name="time_max" />
           <field name="estimation" />
           <field name="impact" />
-          <!-- <button name="generarparticipaciones" type="object" string="Generar" /> -->
-          <!-- <button name="inciarparticipacion" type="object" string="Iniciar" /> -->
+          <button name="inciarparticipacion" type="object" string="Start" invisible="True"/>
+          <button name="iniciarwizard" type="object" string="Wizard" />
+          <button name="finalizarparticipacion" type="object" string="End" />
         </tree>
       </field>
     </record>
@@ -58,37 +62,47 @@
         </search>
       </field>
     </record>
+
     <!-- consursos form view -->
     <record id="consursos_view_form" model="ir.ui.view">
       <field name="name">consursos form</field>
       <field name="model">concursos</field>
       <field name="arch" type="xml">
         <form string="Concurso">
-        <header>
-          <button name="inciarparticipacion" type="object" string="Iniciar" />
-          <button name="iniciarwizard" type="object" string="IniciarWizard" />
-        </header>
+          <header>
+            <button name="inciarparticipacion" type="object" string="Start" attrs="{'invisible':[('estado','not in',('no_iniciado',))]}"/>
+            <button name="iniciarwizard" type="object" string="Wizard" attrs="{'invisible': [('estado','not in',('iniciado',))]}"/>
+            <button name="finalizarparticipacion" type="object" string="End" attrs="{'invisible': [('estado','not in',('iniciado',))]}"/>
+            <!-- <button name="finalizarparticipacion" type="object" string="End" attrs="{'invisible': ['|',('started','=',False),('end','=',True),'|',('num','=',4)]}"/> NOTACIÓN POLACA: Los operadores | y & siempre son de pares (por defecto se usa &) -->
+            <field name="estado" invisible="False" widget="statusbar" options="{'clickable': '1'}"/>
+          </header>
           <sheet>
             <group>
               <group>
-                <field name="name" help="Nombre de concurso"/>
+                <h1><field name="name" help="Nombre de concurso"/></h1>
+                <!-- DOCORADORES: https://www.iwesabe.com/blog/how-to-add-colors-to-tree-view-in-odoo -->
+                <!-- <field name="name" help="Nombre de concurso" style="color:red ! important;" attrs="{'invisible': [('started','=',True)]}"/>
+                  <field name="name" help="Nombre de concurso" style="color:green ! important;" attrs="{'invisible': [('started','=',False)]}"/> -->
               </group>
               <group>
                 <field name="image" widget="image" nolabel="1" class="oe_avatar"/>
               </group>
-            </group>
+            </group>            
             <group name="consursos" string="Datos del concurso">
               <field name="description" />
-
               <group>
+
+                <!-- <field name="started" help="Concurso iniciado"/> -->
                 <field name="date_start" widget="date" />
                 <field name="time_min" widget="float_time" />
-                <field name="estimation" />
+                <field name="estimation"/>
               </group>
               <group>
+                <!-- <field name="end" help="Concurso finalizado"/> -->
                 <field name="date_end" widget="date" />
                 <field name="time_max" widget="float_time" />
-                <field name="impact" widget="percentage"/>
+                <!-- <field name="impact" widget="percentage"/> -->
+                <field name="impact" readonly="True"/>
               </group>
             </group>
             <group name="concursante" string="Concursantes">
@@ -212,7 +226,7 @@
       <field name="view_mode">tree,form</field>
       
       <!-- <field name="context" eval="{'search_default_name': 'Concurso 1'}"/> -->
-      <field name="context" eval="{'search_default_filtrostatevivos': True}"/>  <!-- Lo que haya después de search_default_ es el nombre del campo o filtro -->
+      <field name="context" eval="{'search_default_filtrostatevivos': True}"/> <!--  Lo que haya después de search_default_ es el nombre del campo o filtro -->
       <field name="search_view_id" ref="concursos_view_search"/> <!-- Esto indica donde se aplica el context -->
     </record>
 
