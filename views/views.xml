@@ -130,7 +130,7 @@
         <tree>
           <field name="sequence" widget="handle"/>
           <field name="name"/>
-          <field name="type" />
+          <field name="question_type" />
           <field name="time_min" />
           <field name="time_max" />
         </tree>
@@ -191,6 +191,7 @@
               <tree editable="bottom" create="false">
                 <field name="question_id" readonly="1"/>                
                 <field name="response" readonly="1"/>
+                <field name="response_ok"/>
               </tree>
             </field>
           </sheet>

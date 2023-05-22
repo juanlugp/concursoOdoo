@@ -6,6 +6,22 @@ from odoo.exceptions import UserError
 from odoo import tools
 from datetime import datetime
 
+def calculate_response(self):
+    for record in self:
+        # if record.is_contestada:
+            if record.question_type == 'bool':
+                record.response = record.response_bool and "Verdero" or "Falso"
+            elif record.question_type == 'num':
+                record.response = str(record.response_int)
+            elif record.question_type == 'text':
+                record.response = record.response_text
+            elif record.question_type == 'list':
+                record.response = record.response_list.filtered(lambda buscado: buscado.question_ok == True).name
+            else:
+                record.response = False
+        # else:
+        #     record.response = False
+
 
 class concursos(models.Model):
     _name = 'concursos'
@@ -30,11 +46,11 @@ class concursos(models.Model):
     def write (self, vals):
         if vals.get('estado') == "no_iniciado":
             raise UserError ('No se ha puede volver a No iniciado un concurso')
-        elif vals.get('estado') == "iniciado":
+        if vals.get('estado') == "iniciado":
             self.inciarparticipacionInt()            
         res = super(concursos, self).write(vals)
         if vals.get('estado') == "finalizado":
-            self.finalizarparticipacion()
+            self.finalizarparticipacionInt()
         
         return res
 
@@ -48,8 +64,11 @@ class concursos(models.Model):
     #     end = False
         # for record in self:
         #     end=(record.date_end >= datetime.today())
-      
-    def finalizarparticipacion (self):
+
+    def finalizarparticipacion (self):  
+        self.estado="finalizado"
+
+    def finalizarparticipacionInt (self):
         if self.estado == "no_iniciado":
             raise UserError ('No se ha iniciado el concurso')
         if self.estado == "finalizado":
@@ -57,9 +76,15 @@ class concursos(models.Model):
         
         for record in self:
             id_participacion =record.env['participation'].search([['concurso_id','=',record.id],['partner_id','=',self.env.user.partner_id.id],['state', '!=', 'fi']], limit=1) 
+
             # ahora hay que evaluar si as respuestas son correctas o no
-        # self.estado="finalizado"    --Se se deja haría un bucle infinito porque toda función llama a write
-        # self.end=datetime.today()
+        # self.estado="finalizado"    # Se se deja haría un bucle infinito porque toda función llama a write
+
+    def validarconcurso (self):
+        pr =self.env['participation_response'].search([('participation_id.concurso_id.id','=',self.id)]) 
+        pr.validarresponse ()
+        
+        
 
     def inciarparticipacionInt (self):
         self.ensure_one()
@@ -177,7 +202,7 @@ class questions(models.Model):
     _order = 'sequence, id'
 
     name = fields.Char(string='Name')
-    type = fields.Selection(string='Type', selection=[('num', 'Number'), ('text', 'Text'), ('list', 'List'),  ('bool', 'Boolean')])
+    question_type = fields.Selection(string='Type', selection=[('num', 'Number'), ('text', 'Text'), ('list', 'List'),  ('bool', 'Boolean')])
     response_bool = fields.Boolean(string='Response bool')
     response_int = fields.Float(string='Response number')
     response_text = fields.Text(string='Response text')
@@ -189,10 +214,9 @@ class questions(models.Model):
     
     
 
-    @api.depends('type', 'response_bool',  'response_int', 'response_text', 'response_list')
+    @api.depends('question_type', 'response_bool',  'response_int', 'response_text', 'response_list')
     def _get_response(self):
-        for record in self:
-            record.response = "Hola mundo"
+        calculate_response(self)
 
 class participation(models.Model):
     _name = 'participation'
@@ -208,8 +232,21 @@ class participation(models.Model):
 
     @api.depends('response_bool',  'response_int', 'response_text', 'response_list')
     def _get_response(self):
-        for record in self:
-            record.response = "Hola mundo"
+        calculate_response (self)
+    #     for record in self:
+    #         if record.is_contestada:
+    #             if record.question_type == 'bool':
+    #                 record.response = record.response_bool and "Verdero" or "Falso"
+    #             elif record.question_type == 'num':
+    #                 record.response = str(record.response_int)
+    #             elif record.question_type == 'text':
+    #                 record.response = record.response_text
+    #             elif record.question_type == 'list':
+    #                 record.response = record.response_list.name
+    #             else:
+    #                 record.response = False
+    #         else:
+    #             record.response = False
 
 class participation_response(models.Model):
     _name = 'participation_response'
@@ -226,26 +263,29 @@ class participation_response(models.Model):
     response_ok = fields.Boolean(string='Response ok')
     is_contestada = fields.Boolean(string='Ya contestada')
     participation_id = fields.Many2one(comodel_name='participation', string='Participation')
-    question_type = fields.Selection(string='type', related='question_id.type')
+    question_type = fields.Selection(string='type', related='question_id.question_type')
     
-    
+    def  validarresponse(self):
+        for registro in self:
+            registro.response_ok = (registro.response == registro.question_id.response)
 
     @api.depends('response_bool',  'response_int', 'response_text', 'response_list')
     def _get_response(self):
-        for record in self:
-            if record.is_contestada:
-                if record.question_type == 'bool':
-                    record.response = record.response_bool and "Verdero" or "Falso"
-                elif record.question_type == 'num':
-                    record.response = str(record.response_int)
-                elif record.question_type == 'text':
-                    record.response = record.response_text
-                elif record.question_type == 'list':
-                    record.response = record.response_list.name
-                else:
-                    record.response = False
-            else:
-                record.response = False
+        calculate_response (self)
+    #     for record in self:
+    #         if record.is_contestada:
+    #             if record.question_type == 'bool':
+    #                 record.response = record.response_bool and "Verdero" or "Falso"
+    #             elif record.question_type == 'num':
+    #                 record.response = str(record.response_int)
+    #             elif record.question_type == 'text':
+    #                 record.response = record.response_text
+    #             elif record.question_type == 'list':
+    #                 record.response = record.response_list.name
+    #             else:
+    #                 record.response = False
+    #         else:
+    #             record.response = False
             
     
 class response_options(models.Model):
@@ -292,7 +332,7 @@ class response_wizard(models.TransientModel):
     response_ok = fields.Boolean(string='Response ok')
     participation_id = fields.Many2one(comodel_name='participation', string='Participation')
     texto_question =fields.Char(related='question_id.name')
-    question_type = fields.Selection(related ='question_id.type')
+    question_type = fields.Selection(related ='question_id.question_type')
     participation_response_id = fields.Many2one(comodel_name='participation_response', string='response')
     total_questions = fields.Integer(string='Total Questions', compute="totalquestions")
     question_number = fields.Integer(string='Question Number', compute="totalquestions")
