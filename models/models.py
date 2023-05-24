@@ -4,23 +4,31 @@ from operator import truediv
 from odoo import models, fields, api, _ #_ es para incluir las traducciones
 from odoo.exceptions import UserError
 from odoo import tools
+from datetime import date 
 from datetime import datetime
 
-def calculate_response(self):
-    for record in self:
-        # if record.is_contestada:
-            if record.question_type == 'bool':
-                record.response = record.response_bool and "Verdero" or "Falso"
-            elif record.question_type == 'num':
-                record.response = str(record.response_int)
-            elif record.question_type == 'text':
-                record.response = record.response_text
-            elif record.question_type == 'list':
-                record.response = record.response_list.filtered(lambda buscado: buscado.question_ok == True).name
-            else:
-                record.response = False
-        # else:
-        #     record.response = False
+def calculate_response(entrada):
+      
+    if entrada.get('question_type') == 'bool':
+        if not 'response_bool' in entrada.keys():
+            salida = "Error"
+        elif entrada.get('response_bool'): 
+            salida="Verdadero"
+        else: 
+            salida = "Falso"
+
+    elif entrada.get('question_type') == 'num':
+        salida = str(entrada.get('response_int'))
+
+    elif entrada.get('question_type') == 'text':
+        salida = entrada.get('response_text')
+
+    elif entrada.get('question_type') == 'list':
+        salida = str(entrada.get('response_list').name)
+        
+    else:
+        salida = False
+    return salida
 
 
 class concursos(models.Model):
@@ -115,18 +123,20 @@ class concursos(models.Model):
 
 
     def iniciarwizard(self):
-        hoy=datetime.today()
+        hoy = fields.Date.today()
+
         inicio=self.date_start
+        # raise UserError(str(type(inicio)) + str(type(hoy)))
         if self.estado == "no_iniciado":
             raise UserError ('No se ha iniciado el concurso')
-        if (inicio!=False & inicio<=hoy):
+        if (inicio!=False and inicio <= hoy):
             raise UserError ('El concurso aún no se puede realizar')
         if self.estado == "finalizado":
             raise UserError ('El concurso ya ha expirado')
         
         id_participacion =self.env['participation'].search([['concurso_id','=',self.id],['partner_id','=',self.env.user.partner_id.id],['state', '!=', 'fi']], limit=1) 
         # self.env['participation_response'].search(['participation_id', '=', id_participacion])
-        respuestasSinContestar = id_participacion.participation_response_ids.filtered(lambda x: not x.response)
+        respuestasSinContestar = id_participacion.participation_response_ids.filtered(lambda x: not x.is_contestada)
         if respuestasSinContestar:
             wiz={
                     'question_id': respuestasSinContestar[0].question_id.id,
@@ -208,7 +218,7 @@ class questions(models.Model):
     response_text = fields.Text(string='Response text')
     response_list = fields.One2many(comodel_name='response_options', inverse_name='question_id', string='Response list')
     time_min = fields.Integer(string='Minimum time')
-    time_max = fields.Integer(string='Maximum time')
+    time_max = fields.Integer(string='Maximum time')º
     response = fields.Text(compute='_get_response', string='Response')
     sequence = fields.Integer(string='sequence', default=10)
     
@@ -216,7 +226,10 @@ class questions(models.Model):
 
     @api.depends('question_type', 'response_bool',  'response_int', 'response_text', 'response_list')
     def _get_response(self):
-        calculate_response(self)
+        for record in self:
+            diccionario = {'question_type': record.question_type, 'response_int': record.response_int, 'response_bool': record.response_bool, 'response_text': record.response_text, 'response_list': record.response_list}
+            record.response = calculate_response(diccionario)
+# hacer response_list
 
 class participation(models.Model):
     _name = 'participation'
@@ -270,8 +283,13 @@ class participation_response(models.Model):
             registro.response_ok = (registro.response == registro.question_id.response)
 
     @api.depends('response_bool',  'response_int', 'response_text', 'response_list')
+    # entrada = {'question_type': False, 'response_int': 0, 'response_bool': False, 'response_text': '', 'response_list': False}
     def _get_response(self):
-        calculate_response (self)
+        for record in self:
+            diccionario = {'question_type': record.question_type, 'response_int': record.response_int, 'response_bool': record.response_bool, 'response_text': record.response_text, 'response_list': record.response_list}
+            record.response = calculate_response (diccionario)
+        
+        
     #     for record in self:
     #         if record.is_contestada:
     #             if record.question_type == 'bool':
