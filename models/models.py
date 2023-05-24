@@ -52,8 +52,8 @@ class concursos(models.Model):
     # end = fields.Boolean(string='End')
     
     def write (self, vals):
-        if vals.get('estado') == "no_iniciado":
-            raise UserError ('No se ha puede volver a No iniciado un concurso')
+        # if vals.get('estado') == "no_iniciado":
+            # raise UserError ('No se puede volver a No iniciado un concurso')
         if vals.get('estado') == "iniciado":
             self.inciarparticipacionInt()            
         res = super(concursos, self).write(vals)
@@ -218,17 +218,32 @@ class questions(models.Model):
     response_text = fields.Text(string='Response text')
     response_list = fields.One2many(comodel_name='response_options', inverse_name='question_id', string='Response list')
     time_min = fields.Integer(string='Minimum time')
-    time_max = fields.Integer(string='Maximum time')º
+    time_max = fields.Integer(string='Maximum time')
     response = fields.Text(compute='_get_response', string='Response')
     sequence = fields.Integer(string='sequence', default=10)
     
     
 
-    @api.depends('question_type', 'response_bool',  'response_int', 'response_text', 'response_list')
+    @api.depends('question_type', 'response_bool',  'response_int', 'response_text', 'response_list', 'response_list.question_ok')
     def _get_response(self):
+        
         for record in self:
-            diccionario = {'question_type': record.question_type, 'response_int': record.response_int, 'response_bool': record.response_bool, 'response_text': record.response_text, 'response_list': record.response_list}
-            record.response = calculate_response(diccionario)
+            diccionario = {'question_type': record.question_type, 'response_int': record.response_int, 'response_bool': record.response_bool, 'response_text': record.response_text, 'response_list': False}
+            for respuesta_correcta_lista in record.response_list:
+                if respuesta_correcta_lista.question_ok:
+                    diccionario['response_list'] = respuesta_correcta_lista
+
+            if record.question_type == 'list' and not diccionario['response_list'] :
+                record.response= 'No hay opciones correctas'
+            else:             
+                record.response = calculate_response(diccionario)
+  
+    
+
+                    
+                    
+                
+        
 # hacer response_list
 
 class participation(models.Model):
@@ -241,25 +256,11 @@ class participation(models.Model):
     partner_id = fields.Many2one(comodel_name='res.partner', string='Partner')
     concurso_id = fields.Many2one(comodel_name='concursos', string='Concurso')
     state = fields.Selection(selection=[('si', 'Sin Inicia'), ('in', 'Iniciada'), ('fi', 'Finalizado') ], string='Estado')
-    
 
-    @api.depends('response_bool',  'response_int', 'response_text', 'response_list')
-    def _get_response(self):
-        calculate_response (self)
-    #     for record in self:
-    #         if record.is_contestada:
-    #             if record.question_type == 'bool':
-    #                 record.response = record.response_bool and "Verdero" or "Falso"
-    #             elif record.question_type == 'num':
-    #                 record.response = str(record.response_int)
-    #             elif record.question_type == 'text':
-    #                 record.response = record.response_text
-    #             elif record.question_type == 'list':
-    #                 record.response = record.response_list.name
-    #             else:
-    #                 record.response = False
-    #         else:
-    #             record.response = False
+    def validar_participacion(self):
+        for record in self:
+            record.participation_response_ids.validarresponse()
+    
 
 class participation_response(models.Model):
     _name = 'participation_response'
@@ -371,7 +372,7 @@ class response_wizard(models.TransientModel):
     def siguientepregunta(self):
         self.participation_response_id.is_contestada = True   
         if self.question_type == 'bool':
-            self.participation_response_id.response_bool = self.response_bool
+            self.participation_response_id.response_bool = self.response_bool_options_id and self.response_bool_options_id.name == 'Verdadero'
         elif self.question_type == 'num':
             self.participation_response_id.response_int = self.response_int
         elif self.question_type == 'text':
