@@ -31,17 +31,21 @@ def calculate_response(entrada):
     return salida
 
 
-class concursos(models.Model):
+class concursos(models.Model):    
     _name = 'concursos'
     _description = 'listado de concursos'
+    # Herecencia necesaria para enviar mensajes
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+
                 #_('xx') siendo xx lo que se va a traducir
-    name = fields.Char(string=_('Name'))
-    description = fields.Text(string=_('Description'))
-    date_start = fields.Date(string=_('Date start'))
-    date_end = fields.Date(string=_('Date end'))
+    name = fields.Char(string=_('Name'), tracking=True)
+    description = fields.Text(string=_('Description'), tracking=True)
+    date_start = fields.Date(string=_('Date start'), tracking=True)
+    date_end = fields.Date(string=_('Date end'), tracking=True)
     image = fields.Binary(string='Image')
     state = fields.Boolean(string='State')
-    estado = fields.Selection(string='State', selection=[('no_iniciado', 'Not Started'), ('iniciado', 'Started'), ('finalizado', 'Finish')], default="no_iniciado")
+    estado = fields.Selection(string='State', selection=[('no_iniciado', 'Not Started'), ('iniciado', 'Started'), ('finalizado', 'Finish')], default="no_iniciado", tracking=True)
     partner_ids = fields.Many2many(comodel_name='res.partner', string='Partners', relation='concursos_partner_rel', column1='concursos_id', column2='partner_id')
     questions_ids = fields.Many2many(comodel_name='questions', string='Questions', relation='concursos_questions_rel', column1='concursos_id', column2='questions_id') 
     time_min = fields.Integer(string='Minimum time')
