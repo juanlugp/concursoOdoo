@@ -59,7 +59,7 @@ class concursos(models.Model):
         # if vals.get('estado') == "no_iniciado":
             # raise UserError ('No se puede volver a No iniciado un concurso')
         if vals.get('estado') == "iniciado":
-            self.inciarparticipacionInt()            
+            self.inciarparticipacionInt()     
         res = super(concursos, self).write(vals)
         if vals.get('estado') == "finalizado":
             self.finalizarparticipacionInt()
@@ -102,28 +102,33 @@ class concursos(models.Model):
         self.ensure_one()
         if self.estado == "iniciado":
             raise UserError ('Ya tiene participaciones para este concurso')
-        if self.env.user.partner_id.id in self.partner_ids.ids:
+
+        participaciones = []        
+        for record in self.partner_ids:
             part={
                 'concurso_id':self.id,
-                'partner_id':self.env.user.partner_id.id,
-                'name': self.name + ' ' + self.env.user.partner_id.name,
+                'partner_id':record.id,
+                'name': self.name + ' ' + record.name,
                 'participation_response_ids':[(0,0,{'question_id': q.id}) for q in self.questions_ids]
                 }
-            res=self.env['participation'].create(part)            
-            return res
-        else:
-            raise UserError ('No pertenece al concurso')
+            participaciones.append(part)
+        
+        partCreate = self.env['participation'].create(participaciones)
+        template = self.env['mail.template'].browse(8)
+        for record in partCreate:
+            template.send_mail(record.id)
+        self.estado="iniciado"
+        return True
 
-
-    def inciarparticipacion (self):
-        lis=[('concurso_id','=',self.id),('partner_id', '=',self.env.user.partner_id.id)]
-        participaciones=self.env['participation'].search(lis, limit=1)
-        return {
-                "type": "ir.actions.act_window",
-                "res_model": "participation",
-                "views": [[False, "form"]],
-                "res_id":participaciones.id
-                } # Con esto se abre el formulario de la participación creada
+    # def inciarparticipacion (self):
+    #     lis=[('concurso_id','=',self.id),('partner_id', '=',self.env.user.partner_id.id)]
+    #     participaciones=self.env['participation'].search(lis, limit=1)
+    #     return {
+    #             "type": "ir.actions.act_window",
+    #             "res_model": "participation",
+    #             "views": [[False, "form"]],
+    #             "res_id":participaciones.id
+    #             } # Con esto se abre el formulario de la participación creada
 
 
     def iniciarwizard(self):

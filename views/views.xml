@@ -23,7 +23,7 @@
           <field name="time_max" />
           <field name="estimation" />
           <field name="impact" />
-          <button name="inciarparticipacion" type="object" string="Start" invisible="True"/>
+          <button name="inciarparticipacionInt" type="object" string="Start" invisible="True"/>
           <button name="iniciarwizard" type="object" string="Wizard" />
           <button name="finalizarparticipacion" type="object" string="End" />
         </tree>
@@ -70,7 +70,7 @@
       <field name="arch" type="xml">
         <form string="Concurso">
           <header>
-            <button name="inciarparticipacion" type="object" string="Start" attrs="{'invisible':[('estado','not in',('no_iniciado',))]}"/>
+            <button name="inciarparticipacionInt" type="object" string="Start" attrs="{'invisible':[('estado','not in',('no_iniciado',))]}"/>
             <button name="iniciarwizard" type="object" string="Wizard" attrs="{'invisible': [('estado','not in',('iniciado',))]}"/>
             <button name="finalizarparticipacion" type="object" string="End" attrs="{'invisible': [('estado','not in',('iniciado',))]}"/>
             <!-- <button name="finalizarparticipacion" type="object" string="End" attrs="{'invisible': ['|',('started','=',False),('end','=',True),'|',('num','=',4)]}"/> NOTACIÓN POLACA: Los operadores | y & siempre son de pares (por defecto se usa &) -->
