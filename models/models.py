@@ -7,6 +7,9 @@ from odoo import tools
 from datetime import date 
 from datetime import datetime
 
+import logging
+_logger = logging.getLogger(__name__)
+
 def calculate_response(entrada):
       
     if entrada.get('question_type') == 'bool':
@@ -59,6 +62,7 @@ class concursos(models.Model):
         # if vals.get('estado') == "no_iniciado":
             # raise UserError ('No se puede volver a No iniciado un concurso')
         if vals.get('estado') == "iniciado":
+            _logger.warning('Write concursos ' + str(vals))
             self.inciarparticipacionInt()     
         res = super(concursos, self).write(vals)
         if vals.get('estado') == "finalizado":
@@ -96,14 +100,17 @@ class concursos(models.Model):
         pr =self.env['participation_response'].search([('participation_id.concurso_id.id','=',self.id)]) 
         pr.validarresponse ()
         
-        
+    
+    def iniciarConcursos (self):
+        self.write({'estado':'iniciado'})
 
     def inciarparticipacionInt (self):
+        _logger.warning('entra en iniciarparticipacionInt')
         self.ensure_one()
         if self.estado == "iniciado":
             raise UserError ('Ya tiene participaciones para este concurso')
 
-        participaciones = []        
+        participaciones = []     
         for record in self.partner_ids:
             part={
                 'concurso_id':self.id,
@@ -113,11 +120,12 @@ class concursos(models.Model):
                 }
             participaciones.append(part)
         
+        _logger.warning('Antes del for ' + str(participaciones))   
         partCreate = self.env['participation'].create(participaciones)
         template = self.env['mail.template'].browse(8)
+        _logger.warning('antes del for de envio de correo ' + str(partCreate))
         for record in partCreate:
             template.send_mail(record.id)
-        self.estado="iniciado"
         return True
 
     # def inciarparticipacion (self):
