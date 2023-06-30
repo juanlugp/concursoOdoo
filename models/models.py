@@ -10,6 +10,18 @@ from datetime import datetime
 import logging
 _logger = logging.getLogger(__name__)
 
+
+try:
+    from odoo.addons.queue_job.job import job
+except ImportError:
+    _logger.debug('Can not `import queue_job`.')
+    import functools
+
+    def empty_decorator_factory(*argv, **kwargs):
+        return functools.partial
+    job = empty_decorator_factory
+
+
 def calculate_response(entrada):
       
     if entrada.get('question_type') == 'bool':
@@ -63,7 +75,7 @@ class concursos(models.Model):
             # raise UserError ('No se puede volver a No iniciado un concurso')
         if vals.get('estado') == "iniciado":
             _logger.warning('Write concursos ' + str(vals))
-            self.inciarparticipacionInt()     
+            self.with_delay(False).inciarparticipacionInt()    
         res = super(concursos, self).write(vals)
         if vals.get('estado') == "finalizado":
             self.finalizarparticipacionInt()
@@ -104,6 +116,7 @@ class concursos(models.Model):
     def iniciarConcursos (self):
         self.write({'estado':'iniciado'})
 
+    # @job
     def inciarparticipacionInt (self):
         _logger.warning('entra en iniciarparticipacionInt')
         self.ensure_one()
