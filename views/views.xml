@@ -73,6 +73,7 @@
             <button name="inciarparticipacionInt" type="object" string="Start" attrs="{'invisible':[('estado','not in',('no_iniciado',))]}"/>
             <button name="iniciarwizard" type="object" string="Wizard" attrs="{'invisible': [('estado','not in',('iniciado',))]}"/>
             <button name="finalizarparticipacion" type="object" string="End" attrs="{'invisible': [('estado','not in',('iniciado',))]}"/>
+            <button name="testSQL" type="object" string="SQL"/>
             <!-- <button name="finalizarparticipacion" type="object" string="End" attrs="{'invisible': ['|',('started','=',False),('end','=',True),'|',('num','=',4)]}"/> NOTACIÓN POLACA: Los operadores | y & siempre son de pares (por defecto se usa &) -->
             <field name="estado" invisible="False" widget="statusbar" options="{'clickable': '1'}"/>
           </header>

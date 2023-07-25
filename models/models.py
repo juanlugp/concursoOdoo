@@ -7,6 +7,8 @@ from odoo import tools
 from datetime import date 
 from datetime import datetime
 
+import psycopg2
+
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -235,6 +237,15 @@ class concursos(models.Model):
     def estimation_clear(self):                
         for record in self:
             record.estimation=0
+
+    def testSQL(self):
+        conn = psycopg2.connect(database = "testdb", user = "postgres", password = "pass123", host = "127.0.0.1", port = "5432")
+        cr = conn.cursor()
+        
+        self.env.cr.execute("SELECT * FROM res_partner LIMIT 3")
+        items = self.env.cr.fetchall()
+        raise UserError(str(items))
+        # raise UserError('Hola desde TestSQL')
 
 class questions(models.Model):
     _name = 'questions'
