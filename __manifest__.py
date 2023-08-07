@@ -33,7 +33,7 @@
         'views/views.xml',
         'views/templates.xml',
     ],
-    # only loaded in demonstration mode
+    # only loaded in demonstration model
     'demo': [
         'demo/demo.xml',
     ],
